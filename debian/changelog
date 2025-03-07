@@ -1,3 +1,46 @@
+libpath-tiny-perl (0.146-1) unstable; urgency=medium
+
+  [ upstream ]
+  * new release(s)
+
+  [ Jonas Smedegaard ]
+  * declare compliance with Debian Policy 4.7.0
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 02 Jul 2024 15:23:48 +0200
+
+libpath-tiny-perl (0.144-1) unstable; urgency=medium
+
+  [ upstream ]
+  * new release(s)
+
+  [ Jonas Smedegaard ]
+  * declare compliance with Debian Policy 4.6.2
+  * update git-buildpackage config:
+    + use DEP-14 git branches
+    + enable automatic DEP-14 branch name handling
+    + add usage config
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 31 Dec 2022 11:43:35 +0100
+
+libpath-tiny-perl (0.124-1) unstable; urgency=medium
+
+  * Team upload
+  * Import upstream version 0.124.
+  * Declare compliance with Debian Policy 4.6.1
+
+ -- Florian Schlichting <fsfs@debian.org>  Wed, 21 Sep 2022 22:59:38 +0200
+
+libpath-tiny-perl (0.122-1) unstable; urgency=medium
+
+  [ upstream ]
+  * New release(s).
+
+  [ Jonas Smedegaard ]
+  * tighten lintian overrides
+  * update copyright info: update coverage
+
+ -- Jonas Smedegaard <dr@jones.dk>  Wed, 19 Jan 2022 14:24:34 +0100
+
 libpath-tiny-perl (0.120-1) unstable; urgency=medium
 
   [ upstream ]

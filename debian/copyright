@@ -15,7 +15,7 @@ License: Apache-2.0
 
 Files: debian/*
 Copyright:
-  2013-2018, 2020-2021  Jonas Smedegaard <dr@jones.dk>
+  2013-2018, 2020-2022  Jonas Smedegaard <dr@jones.dk>
 License-Grant:
  This packaging is free software;
  you can redistribute it and/or modify it

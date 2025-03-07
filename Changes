@@ -1,5 +1,217 @@
 Revision history for Path-Tiny
 
+0.146     2024-05-08 08:27:52-04:00 America/New_York
+
+    - No changes from 0.145-TRIAL
+
+0.145     2024-05-01 22:26:26-04:00 America/New_York (TRIAL RELEASE)
+
+    [Changes]
+
+    - Improved error message spewing to a file in a non-existent directory.
+
+0.144     2022-12-01 11:36:19-05:00 America/New_York
+
+    - No changes from 0.143-TRIAL
+
+0.143     2022-11-26 17:46:59-05:00 America/New_York (TRIAL RELEASE)
+
+    [Testing]
+
+    - Fixed tilde expansion tests where ~root expands to '/'.
+
+0.142     2022-11-09 07:06:36-05:00 America/New_York
+
+    No changes from 0.141; all changes since last stable release are summarized below.
+
+    [*** DEPRECATIONS ***]
+
+    - Tilde expansion is deprecated due to inconsistent and bug-prone behavior.
+
+    [Bug fixes]
+
+    - Prevent expansion of tildes that are not the very first character (e.g.
+      "./~foo"). Prevent unintentional tilde expansion during internal path
+      processing. Escape non-tilde glob characters before tilde expansion.
+
+    - Fixed spew/edit to a long filename approaching the filesystem length
+      limit.
+
+    - Internal calls to `print` are checked for possible errors.
+
+    - Internal read calls are checked for errors.
+
+    [Changes]
+
+    - Path stringification now adds "./" in front of paths starting with literal tilde
+      so they will round-trip.  FREEZE updated to use this stringification rule as well.
+
+    - `move` now uses File::Copy::move internally instead of the built-in `rename`,
+      allowing it to work across filesystems.  It also returns an object for the
+      moved location, allowing chaining.
+
+    - edit_lines_raw now uses a buffered raw I/O layer. edit_lines_utf8 now
+      prefers PerlIO::utf8_strict, if available.
+
+    - lines_utf8 now consistently uses a buffered I/O layer.
+
+    - open*_utf8 now prefers PerlIO::utf8_strict, if available.
+
+    - slurp_utf8 now consistently uses an unbuffered I/O layer.
+
+    [Documented]
+
+    - Changed all raw/UTF-8 layer descriptions in method documentation to match
+      the code.
+
+    - Fixed SYNOPSIS syntax.
+
+    - Documented how to disable TMPDIR when making temp files/dirs.
+
+    [Testing]
+
+    - Add additional tilde stringification testing.
+
+    - Fixed tilde expansion tests on Windows.
+
+    - Skip a problematic test case on cygwin.
+
+0.141     2022-11-07 12:47:25-05:00 America/New_York (TRIAL RELEASE)
+
+    [Testing]
+
+    - Add additional tilde expansion tests
+
+0.139     2022-11-03 15:44:46-04:00 America/New_York (TRIAL RELEASE)
+
+    [Testing]
+
+    - Skip a problematic test case on cygwin
+
+0.137     2022-11-02 09:50:26-04:00 America/New_York (TRIAL RELEASE)
+
+    [Testing]
+
+    - Add additional tilde stringification testing.
+
+0.135     2022-11-01 22:27:21-04:00 America/New_York (TRIAL RELEASE)
+
+    [Testing]
+
+    - Fixed additional issues with tilde expansion tests on Windows for testers
+      with lowercase drive letters in their userprofile.
+
+0.133     2022-10-31 23:55:01-04:00 America/New_York (TRIAL RELEASE)
+
+    [Bug fixes]
+
+    - Path stringification now adds "./" in front of paths starting with literal tilde
+      so they will round-trip.  FREEZE updated to use this stringification rule as well.
+
+    [Changes]
+
+    - `move` now uses File::Copy::move internally instead of the built-in `rename`,
+      allowing it to work across filesystems.  It also returns an object for the
+      moved location, allowing chaining.
+
+    [Testing]
+
+    - Fixed tilde expansion tests on Windows.
+
+0.131     2022-10-31 10:42:46-04:00 America/New_York (TRIAL RELEASE)
+
+    [*** DEPRECATIONS ***]
+
+    - Tilde expansion is deprecated due to inconsistent and bug-prone behavior.
+
+    [Bug fixes]
+
+    - Fixed spew/edit to a long filename approaching the filesystem length
+      limit.
+
+    - Internal calls to `print` are checked for possible errors.
+
+    - Internal read calls are checked for errors.
+
+    - Prevent expansion of tildes that are not the very first character (e.g.
+      "./~foo"). Prevent unintentional tilde expansion during internal path
+      processing. Escape non-tilde glob characters before tilde expansion.
+
+    [Changes]
+
+    - edit_lines_raw now uses a buffered raw I/O layer. edit_lines_utf8 now
+      prefers PerlIO::utf8_strict, if available.
+
+    - lines_utf8 now consistently uses a buffered I/O layer.
+
+    - open*_utf8 now prefers PerlIO::utf8_strict, if available.
+
+    - slurp_utf8 now consistently uses an unbuffered I/O layer.
+
+    [Documented]
+
+    - Changed all raw/UTF-8 layer descriptions in method documentation to match
+      the code.
+
+    - Fixed SYNOPSIS syntax.
+
+    - Documented how to disable TMPDIR when making temp files/dirs.
+
+0.130     2022-10-20 07:08:01-04:00 America/New_York
+
+    [Bug fixes]
+
+    - mkdir no longer fails when applied to an existing directory.
+
+0.128     2022-10-19 15:32:39-04:00 America/New_York
+
+    - No changes from 0.127-TRIAL.
+
+0.127     2022-10-05 17:17:36-04:00 America/New_York (TRIAL RELEASE)
+
+    [Testing]
+
+    - Fixed has_same_bytes test for Windows.
+
+0.125     2022-09-30 17:08:36-04:00 America/New_York (TRIAL RELEASE)
+
+    [*** DEPRECATIONS ***]
+
+    - The 'mkpath' method is deprecated in favor of 'mkdir'.
+
+    [Additions]
+
+    - Added 'mkdir' to replace 'mkpath', but returning the path object for chaining.
+
+    - Added `has_same_bytes` to efficiently compare the contents of two files.
+
+    [Documentation]
+
+    - Edited SYNOPSIS
+
+0.124     2022-09-02 11:06:12-04:00 America/New_York
+
+    - No changes from 0.123-TRIAL.
+
+0.123     2022-08-29 11:06:49-04:00 America/New_York (TRIAL RELEASE)
+
+    [Documentation]
+
+    - Added link to `touchpath` in the `mkpath` docs.
+
+    - Fixed example in `tempfile` docs.
+
+0.122     2022-01-16 10:05:08-05:00 America/New_York
+
+    - No changes from 0.121-TRIAL.
+
+0.121     2022-01-08 11:05:33-05:00 America/New_York (TRIAL RELEASE)
+
+    [Additions]
+
+    - Adds `size` and `size_human` methods.  The latter gives `ls -lh` style
+      output, with options to choose base2 or base10 forms.
+
 0.120     2021-10-24 12:12:57-04:00 America/New_York
 
     - No changes from 0.119-TRIAL.

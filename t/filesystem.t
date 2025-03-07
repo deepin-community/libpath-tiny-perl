@@ -93,7 +93,7 @@ my $tmpdir = Path::Tiny->tempdir;
     $dir = path( $tmpdir, 'foo', 'bar' );
     $dir->parent->remove_tree if -e $dir->parent;
 
-    ok $dir->mkpath, "Created $dir";
+    ok $dir->mkdir, "Created $dir";
     ok -d $dir, "$dir is a directory";
 
     $dir = $dir->parent;
@@ -103,8 +103,8 @@ my $tmpdir = Path::Tiny->tempdir;
 
 {
     $dir = path( $tmpdir, 'foo' );
-    ok $dir->mkpath;
-    ok $dir->child('dir')->mkpath;
+    ok $dir->mkdir;
+    ok $dir->child('dir')->mkdir;
     ok -d $dir->child('dir');
 
     ok $dir->child('file.x')->touch;
@@ -159,10 +159,10 @@ my $tmpdir = Path::Tiny->tempdir;
     # Try again with directory called '0', in curdir
     my $orig = Path::Tiny->cwd;
 
-    ok $dir->mkpath;
+    ok $dir->mkdir;
     ok chdir($dir);
     my $dir2 = path(".");
-    ok $dir2->child('0')->mkpath;
+    ok $dir2->child('0')->mkdir;
     ok -d $dir2->child('0');
 
     subtest 'iterator' => sub {
@@ -207,7 +207,7 @@ my $tmpdir = Path::Tiny->tempdir;
     ok !$file->remove, "removing file again returns false";
 
     my $subdir = $tmpdir->child('subdir');
-    ok $subdir->mkpath;
+    ok $subdir->mkdir;
     ok exception { $subdir->remove }, "calling 'remove' on a directory throws";
     ok rmdir $subdir;
 
@@ -289,6 +289,69 @@ my $tmpdir = Path::Tiny->tempdir;
     is( $@, '', "no error from realpath on non-existent last component" );
 }
 
+subtest "move()" => sub {
+    subtest "dest is a file (and does not exist)" => sub {
+        my $file = $tmpdir->child("mv-foo.txt");
+        $file->spew("Hello World\n");
+
+        my $moveto = $tmpdir->child("mv-bar.txt");
+        ok !-e $moveto, "destination does not exist before";
+        my $result = $file->move("$moveto");
+
+        is "$result" => "$moveto", "returned the right file";
+        is $moveto->slurp, "Hello World\n", "target exists and matches orig";
+        ok !$file->exists, "orig no longer exists";
+    };
+
+    subtest "dest is a dir" => sub {
+        my $file = $tmpdir->child("mv-dir.txt");
+        $file->spew("Hello World\n");
+
+        my $anothertmpdir = Path::Tiny->tempdir;
+        my $result        = $file->move($anothertmpdir);
+
+        is "$result" => "$anothertmpdir/mv-dir.txt", "returned the right file";
+        is $result->slurp, "Hello World\n", "target exists and matches orig";
+        ok !$file->exists, "orig no longer exists";
+    };
+
+    subtest "dest file already exists" => sub {
+        my $file = $tmpdir->child("mv-non.txt");
+        $file->spew("Hello World\n");
+
+        my $anothertmpdir = Path::Tiny->tempdir;
+        my $dest = $anothertmpdir->child( "move-it.there");
+        $dest->spew( "Original Content\n" );
+
+        ok -f $dest, "destination file exists";
+
+        my $result;
+        {
+            local ( $!, $@ );
+            $result        = $file->move("$dest");
+            is $@, undef, q[$@ - no errors leaked on success];
+            is $!, "", q[$! - no errors leaked on success];
+        }
+
+        is "$result" => $dest, "returned the right file";
+        is $result->slurp, "Hello World\n", "target exists and matches orig";
+
+        ok !$file->exists, "orig no longer exists";
+    };
+
+    subtest "dest parent dir does not exist" => sub {
+        my $file = $tmpdir->child("mv-noparent.txt");
+        $file->spew("Hello World\n");
+
+        my $anothertmpdir = Path::Tiny->tempdir;
+        my $result = eval { $file->move("$anothertmpdir/rutroh/yo.txt") };
+
+        ok !$result, "does not return true";
+        like "$@", qr/move/, "throws error";
+        ok $file->exists, "orig still exists";
+    }
+};
+
 subtest "copy()" => sub {
     my $file = $tmpdir->child("foo.txt");
     $file->spew("Hello World\n");
@@ -303,7 +366,7 @@ subtest "copy()" => sub {
     };
 
     subtest "dest is a dir" => sub {
-        # new tempdir nto to clobber the original foo.txt
+        # new tempdir not to clobber the original foo.txt
         my $tmpdir = Path::Tiny->tempdir;
         my $result = $file->copy($tmpdir);
 
@@ -338,6 +401,15 @@ subtest "copy()" => sub {
     );
 }
 
+{
+    # Only run if a 255 length filename is allowed. Test checks that the temp
+    # file created doesn't exceed 255 characters.
+    my $file = $tmpdir->child("A" x 255);
+    if ( eval { $file->touch; 1 } ) {;
+        ok( path($file)->spew("Hello"), "spew to long filename" );
+    }
+}
+
 SKIP: {
     my $newtmp = Path::Tiny->tempdir;
     my $file   = $newtmp->child("foo.txt");
@@ -362,7 +434,7 @@ SKIP: {
 
     my $dir = $newtmp->child('foo');
     $link = $newtmp->child("bar");
-    ok $dir->mkpath;
+    ok $dir->mkdir;
     ok -d $dir;
     $file = $dir->child("baz.txt");
     $file->spew("Hello World\n");
@@ -373,7 +445,7 @@ SKIP: {
 
     $dir  = $newtmp->child('foo');
     $link = $newtmp->child("bar");
-    ok $dir->mkpath;
+    ok $dir->mkdir;
     ok -d $dir;
     $file = $dir->child("baz.txt");
     $file->spew("Hello World\n");
@@ -407,7 +479,7 @@ SKIP: {
 ##  ok  $t->subsumes($foo_bar), "t subsumes t/foo/bar";
 ##  ok !$t->contains($foo_bar), "t doesn't contain t/foo/bar";
 ##
-##  $foo_bar->mkpath;
+##  $foo_bar->mkdir;
 ##  ok  $t->subsumes($foo_bar), "t still subsumes t/foo/bar";
 ##  ok  $t->contains($foo_bar), "t now contains t/foo/bar";
 ##

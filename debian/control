@@ -11,7 +11,7 @@ Build-Depends:
 Maintainer: Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>
 Uploaders:
  Jonas Smedegaard <dr@jones.dk>,
-Standards-Version: 4.6.0
+Standards-Version: 4.7.0
 Vcs-Git: https://salsa.debian.org/perl-team/modules/packages/libpath-tiny-perl.git
 Vcs-Browser: https://salsa.debian.org/perl-team/modules/packages/libpath-tiny-perl
 Homepage: https://metacpan.org/module/Path::Tiny
